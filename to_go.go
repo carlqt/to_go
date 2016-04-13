@@ -1,10 +1,12 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"github.com/carlqt/to_go/models"
+	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	_ "reflect"
 )
 
 var db, err = gorm.Open("postgres", "dbname=to_go_dev sslmode=disable")
@@ -18,6 +20,7 @@ func main() {
 
 	router.GET("/", index)
 	router.POST("/user", addUser)
+	router.GET("/user/:id", show)
 
 	router.Run(":9000")
 }
@@ -33,4 +36,15 @@ func addUser(r *gin.Context) {
 
 	db.Create(&user)
 	r.JSON(201, gin.H{"success": "Yeah"})
+}
+
+func show(r *gin.Context) {
+	id := r.Param("id")
+
+	user := db.Find(&models.User{}, id)
+
+	js := structs.Map(user)
+
+	fmt.Println(user)
+	r.JSON(200, js["Value"])
 }

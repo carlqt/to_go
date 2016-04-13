@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./models"
 	"fmt"
+	"github.com/carlqt/to_go/models"
 )
 
 type Rectangle struct {

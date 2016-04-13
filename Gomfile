@@ -1,3 +1,4 @@
+gom 'github.com/fatih/structs'
 gom 'github.com/gin-gonic/gin', :commit => '7d0b3292034ecab59241da4dcae06c56c38b1fd4'
 gom 'github.com/golang/protobuf', :commit => 'dda510ac0fd43b39770f22ac6260eb91d377bce3'
 gom 'github.com/jinzhu/gorm', :commit => '5174cc5c242a728b435ea2be8a2f7f998e15429b'

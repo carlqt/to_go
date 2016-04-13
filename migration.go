@@ -1,10 +1,9 @@
 package main
 
 import (
-	"./models"
 	"fmt"
+	"github.com/carlqt/to_go/models"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {

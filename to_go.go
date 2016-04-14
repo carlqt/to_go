@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/carlqt/to_go/models"
-	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	_ "reflect"
+	"strconv"
 )
 
 var db, err = gorm.Open("postgres", "dbname=to_go_dev sslmode=disable")
@@ -26,16 +25,19 @@ func main() {
 }
 
 func index(r *gin.Context) {
-	var user models.User
-	db.Last(&user)
-	r.JSON(200, gin.H{"name": user.Name})
+	var users []models.User
+	db.Find(&users)
+	r.JSON(200, users)
 }
 
 func addUser(r *gin.Context) {
-	user := models.User{Name: "Anne", Age: 24}
 
-	db.Create(&user)
-	r.JSON(201, gin.H{"success": "Yeah"})
+	name := r.DefaultQuery("name", "Anonymous")
+	age, _ := strconv.Atoi(r.Query("age"))
+
+	db.Create(&models.User{Name: name, Age: age})
+
+	r.JSON(201, gin.H{"name": name, "age": age})
 }
 
 func show(r *gin.Context) {
@@ -43,8 +45,6 @@ func show(r *gin.Context) {
 
 	user := db.Find(&models.User{}, id)
 
-	js := structs.Map(user)
-
 	fmt.Println(user)
-	r.JSON(200, js["Value"])
+	r.JSON(200, user.Value)
 }

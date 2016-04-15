@@ -10,3 +10,7 @@ type Task struct {
 	Description string `gorm:"size:65536"`
 	UserID      int
 }
+
+func (task Task) Speak(user User) string {
+	return user.Name
+}

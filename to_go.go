@@ -19,7 +19,8 @@ func main() {
 	router.GET("/", index)
 	router.GET("/user/:id", show)
 	router.GET("/tasks", taskIndex)
-	router.GET("/test", test)
+	router.GET("/user/:id/task", showUserTasks)
+	router.POST("/test", test)
 	router.POST("/user/:id/task", addUserTask)
 	router.POST("/user", addUser)
 
@@ -61,7 +62,7 @@ func taskIndex(r *gin.Context) {
 
 func addUserTask(r *gin.Context) {
 	id, _ := strconv.Atoi(r.Param("id"))
-	taskDescription := r.Query("description")
+	taskDescription := r.PostForm("description")
 
 	user := db.Find(&models.User{}, id)
 
@@ -73,7 +74,23 @@ func addUserTask(r *gin.Context) {
 	}
 }
 
+func showUserTasks(r *gin.Context) {
+	id, _ := strconv.Atoi(r.Param("id"))
+
+	user := db.Find(&models.User{}, id)
+
+	if user.RecordNotFound() {
+		r.JSON(404, gin.H{"error": "User not found"})
+	} else {
+		var tasks []models.Task
+
+		user.Related(&tasks)
+
+		r.JSON(200, tasks)
+	}
+}
+
 func test(r *gin.Context) {
-	desc := r.DefaultQuery("description", "Failed")
+	desc := r.DefaultPostForm("description", "Failed")
 	r.JSON(200, gin.H{"description": desc})
 }

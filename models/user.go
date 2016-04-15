@@ -8,9 +8,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Name  string
-	Age   int
-	Tasks []Task
+	Name string
+	Age  int
 }
 
 func (user User) Hello() string {

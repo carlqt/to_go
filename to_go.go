@@ -23,6 +23,7 @@ func main() {
 	router.POST("/test", test)
 	router.POST("/user/:id/task", addUserTask)
 	router.POST("/user", addUser)
+	router.PUT("/task/:id", updateTask)
 
 	router.Run(":9000")
 }
@@ -70,7 +71,7 @@ func addUserTask(r *gin.Context) {
 		r.JSON(404, gin.H{"error": "User not found"})
 	} else {
 		task := db.Create(&models.Task{Description: taskDescription, UserID: id})
-		r.JSON(201, task)
+		r.JSON(201, task.Value)
 	}
 }
 
@@ -87,6 +88,19 @@ func showUserTasks(r *gin.Context) {
 		user.Related(&tasks)
 
 		r.JSON(200, tasks)
+	}
+}
+
+func updateTask(r *gin.Context) {
+	var task models.Task
+	id, _ := strconv.Atoi(r.Param("id"))
+	desc := r.PostForm("description")
+
+	if db.First(&task, id).RecordNotFound() {
+		r.JSON(404, gin.H{"error": "User not found"})
+	} else {
+		db.Model(&task).Update("description", desc)
+		r.JSON(200, task)
 	}
 }
 

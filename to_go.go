@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/carlqt/to_go/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -18,8 +17,11 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/", index)
-	router.POST("/user", addUser)
 	router.GET("/user/:id", show)
+	router.GET("/tasks", taskIndex)
+	router.GET("/test", test)
+	router.POST("/user/:id/task", addUserTask)
+	router.POST("/user", addUser)
 
 	router.Run(":9000")
 }
@@ -31,7 +33,6 @@ func index(r *gin.Context) {
 }
 
 func addUser(r *gin.Context) {
-
 	name := r.DefaultQuery("name", "Anonymous")
 	age, _ := strconv.Atoi(r.Query("age"))
 
@@ -44,7 +45,35 @@ func show(r *gin.Context) {
 	id := r.Param("id")
 
 	user := db.Find(&models.User{}, id)
+	if user.RecordNotFound() {
+		r.JSON(404, gin.H{"error": "Record not found"})
+	} else {
+		r.JSON(200, user.Value)
+	}
+}
 
-	fmt.Println(user)
-	r.JSON(200, user.Value)
+func taskIndex(r *gin.Context) {
+	var tasks []models.Task
+	db.Find(&tasks)
+
+	r.JSON(200, tasks)
+}
+
+func addUserTask(r *gin.Context) {
+	id, _ := strconv.Atoi(r.Param("id"))
+	taskDescription := r.Query("description")
+
+	user := db.Find(&models.User{}, id)
+
+	if user.RecordNotFound() {
+		r.JSON(404, gin.H{"error": "User not found"})
+	} else {
+		task := db.Create(&models.Task{Description: taskDescription, UserID: id})
+		r.JSON(201, task)
+	}
+}
+
+func test(r *gin.Context) {
+	desc := r.DefaultQuery("description", "Failed")
+	r.JSON(200, gin.H{"description": desc})
 }

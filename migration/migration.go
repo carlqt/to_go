@@ -13,6 +13,7 @@ func main() {
 	}
 
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(models.Task{})
 	fmt.Println("Migration done")
 	//var user models.User
 

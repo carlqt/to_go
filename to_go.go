@@ -35,8 +35,8 @@ func index(r *gin.Context) {
 }
 
 func addUser(r *gin.Context) {
-	name := r.DefaultQuery("name", "Anonymous")
-	age, _ := strconv.Atoi(r.Query("age"))
+	name := r.PostForm("name")
+	age, _ := strconv.Atoi(r.PostForm("age"))
 
 	db.Create(&models.User{Name: name, Age: age})
 

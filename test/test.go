@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/carlqt/to_go/models"
 )
 
 type Rectangle struct {
@@ -10,7 +9,7 @@ type Rectangle struct {
 	Width  int
 }
 
-func main() {
-	u := models.User{"Carl", 15}
+func init() {
+	u := Rectangle{14, 15}
 	fmt.Println(u)
 }

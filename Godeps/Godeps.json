@@ -4,10 +4,6 @@
 	"GodepVersion": "v62",
 	"Deps": [
 		{
-			"ImportPath": "github.com/fatih/structs",
-			"Rev": "73c4e3dc02a78deaba8640d5f3a8c236ec1352bf"
-		},
-		{
 			"ImportPath": "github.com/gin-gonic/gin",
 			"Comment": "v1.0rc1-255-g7d0b329",
 			"Rev": "7d0b3292034ecab59241da4dcae06c56c38b1fd4"

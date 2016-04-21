@@ -1,18 +1,41 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"github.com/carlqt/to_go/models"
-	"github.com/jinzhu/gorm"
+	log "github.com/Sirupsen/logrus"
+	"os"
 )
 
-var db, err = gorm.Open("postgres", "dbname=to_go_dev sslmode=disable")
+func check(err error, level string) {
+	if err != nil {
+		switch level {
+		case "error":
+			log.Error(err)
+		case "info":
+			log.Info(err)
+		case "fatal":
+			log.Fatal(err)
+		default:
+			panic("Unrecognized error level")
+		}
+	}
+}
 
 func main() {
-	var tasks []models.Task
-	var user models.User
+	fi, err := os.Open("input_fil.txt")
+	check(err, "fatal")
 
-	db.Find(&user, 1).Related(&tasks)
+	defer func() {
+		log.Info("closing file")
+		fi.Close()
+	}()
 
-	fmt.Println(tasks)
+	scanner := bufio.NewScanner(fi)
+
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	check(scanner.Err(), "error")
 }

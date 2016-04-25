@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/carlqt/to_go/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -44,8 +43,7 @@ func addUser(r *gin.Context) {
 	} else {
 		user := &models.User{Name: name, Age: age}
 
-		if err = user.Validate(); err != nil {
-			fmt.Println(err)
+		if err = user.Validate(db); err != nil {
 			r.JSON(400, gin.H{"error": err.Error()})
 		} else {
 			db.Create(&models.User{Name: name, Age: age})

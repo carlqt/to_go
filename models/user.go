@@ -18,10 +18,16 @@ func (user User) Hello() string {
 	return content
 }
 
-func (u *User) Validate() (err error) {
+func (u *User) Validate(db *gorm.DB) (err error) {
 	if u.Age <= 0 {
 		err := errors.New("Age should be greater than 0")
 		return err
 	}
+
+	if !db.Where("name = ?", u.Name).Find(&User{}).RecordNotFound() {
+		err := errors.New("User already exists")
+		return err
+	}
+
 	return nil
 }

@@ -24,7 +24,9 @@ func check(err error, level string) {
 	}
 }
 
-func init() {
+type User struct {
+	Name string
+	Age  int
 }
 
 func main() {
@@ -51,4 +53,7 @@ func main() {
 
 	fmt.Fprintln(writer, "Greed is good")
 	writer.Flush()
+
+	user := &User{"carl", "12"}
+	fmt.Println(user)
 }

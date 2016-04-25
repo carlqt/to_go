@@ -1,7 +1,7 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
+	"fmt"
 	"github.com/carlqt/to_go/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -37,11 +37,21 @@ func index(r *gin.Context) {
 
 func addUser(r *gin.Context) {
 	name := r.PostForm("name")
-	age, _ := strconv.Atoi(r.PostForm("age"))
+	age, err := strconv.Atoi(r.PostForm("age"))
 
-	db.Create(&models.User{Name: name, Age: age})
+	if err != nil {
+		r.JSON(400, gin.H{"error": "Invalid age value"})
+	} else {
+		user := &models.User{Name: name, Age: age}
 
-	r.JSON(201, gin.H{"name": name, "age": age})
+		if err = user.Validate(); err != nil {
+			fmt.Println(err)
+			r.JSON(400, gin.H{"error": err.Error()})
+		} else {
+			db.Create(&models.User{Name: name, Age: age})
+			r.JSON(201, gin.H{"name": name, "age": age})
+		}
+	}
 }
 
 func show(r *gin.Context) {

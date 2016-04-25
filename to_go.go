@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/carlqt/to_go/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"

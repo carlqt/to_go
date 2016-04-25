@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+var logFile string = "logfile.log"
+
 func check(err error, level string) {
 	if err != nil {
 		switch level {
@@ -22,8 +24,11 @@ func check(err error, level string) {
 	}
 }
 
+func init() {
+}
+
 func main() {
-	fi, err := os.Open("input_fil.txt")
+	fi, err := os.Open("input_file.txt")
 	check(err, "fatal")
 
 	defer func() {
@@ -38,4 +43,12 @@ func main() {
 	}
 
 	check(scanner.Err(), "error")
+
+	f, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND, 0666)
+	check(err, "fatal")
+	writer := bufio.NewWriter(f)
+	defer f.Close()
+
+	fmt.Fprintln(writer, "Greed is good")
+	writer.Flush()
 }

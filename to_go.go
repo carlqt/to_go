@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/carlqt/to_go/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -8,6 +9,13 @@ import (
 )
 
 var db, err = gorm.Open("postgres", "dbname=to_go_dev sslmode=disable")
+
+func errsToStr(err []error) (result []string) {
+	for _, e := range err {
+		result = append(result, e.Error())
+	}
+	return result
+}
 
 func main() {
 	if err != nil {
@@ -43,8 +51,8 @@ func addUser(r *gin.Context) {
 	} else {
 		user := &models.User{Name: name, Age: age}
 
-		if err = user.Validate(db); err != nil {
-			r.JSON(400, gin.H{"error": err.Error()})
+		if err := user.Validate(db); err != nil {
+			r.JSON(400, gin.H{"errors": errsToStr(err)})
 		} else {
 			db.Create(&models.User{Name: name, Age: age})
 			r.JSON(201, gin.H{"name": name, "age": age})

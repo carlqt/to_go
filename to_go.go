@@ -31,6 +31,7 @@ func main() {
 	router.POST("/user/:id/task", addUserTask)
 	router.POST("/user", addUser)
 	router.PUT("/task/:id", updateTask)
+	router.DELETE("/destroy_all", destroyAll)
 
 	router.Run(":9000")
 }
@@ -126,6 +127,11 @@ func updateTask(r *gin.Context) {
 		db.Model(&task).Update("description", desc)
 		r.JSON(200, task)
 	}
+}
+
+func destroyAll(r *gin.Context) {
+	db.Delete(&models.User{})
+	db.Delete(&models.Task{})
 }
 
 func test(r *gin.Context) {

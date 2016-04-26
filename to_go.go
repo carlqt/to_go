@@ -47,27 +47,35 @@ func addUser(r *gin.Context) {
 
 	if err != nil {
 		r.JSON(400, gin.H{"error": "Invalid age value"})
+
 	} else {
 		user := &models.User{Name: name, Age: age}
 
 		if err := user.Validate(db); err != nil {
 			r.JSON(400, gin.H{"errors": errsToStr(err)})
 		} else {
-			db.Create(&models.User{Name: name, Age: age})
-			r.JSON(201, gin.H{"name": name, "age": age})
+			db.Create(&user)
+			r.JSON(201, gin.H{"name": user.Name, "age": user.Age})
 		}
 	}
 }
 
 func show(r *gin.Context) {
-	id := r.Param("id")
+	id, err := strconv.Atoi(r.Param("id"))
+
+	if err != nil {
+		r.JSON(400, gin.H{"error": "Invalid id value"})
+		return
+	}
 
 	user := db.Find(&models.User{}, id)
+
 	if user.RecordNotFound() {
 		r.JSON(404, gin.H{"error": "Record not found"})
 	} else {
 		r.JSON(200, user.Value)
 	}
+
 }
 
 func taskIndex(r *gin.Context) {
